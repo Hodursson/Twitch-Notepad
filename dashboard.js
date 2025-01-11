@@ -1,5 +1,7 @@
 {
-
+    const alias = {
+        emilya: ["emilya33", "emilya"]
+    };
     /**
         * Get 7TV user by a connected platform account.
         * @param {string} platform - e.g. "TWITCH", "YOUTUBE", "KICK", "TROVO".
@@ -121,6 +123,13 @@ query Users($userId: Id!) {
         emilya_channel_id = (await apiRequest('users?login=emilya')).data[0].id
         twemotes = (await apiRequest('chat/emotes?broadcaster_id=' + emilya_channel_id))
         twglobalemotes = (await apiRequest('chat/emotes/global'))
+        //loop the twitch emotes to change the alias if it exist.
+        channelName = "emilya" // need to change this for request that find the actual channel name once testing is done
+        if (channelName in alias) {
+            twemotes.data.forEach(twitchEmote => {
+                twitchEmote.name = twitchEmote.name.replace(alias[channelName][0], alias[channelName][1])
+            });
+        }
         stvid = (await getUserByConnection('TWITCH', emilya_channel_id)).id
 
         stvemotes = await getUserActiveEmotes(stvid)
